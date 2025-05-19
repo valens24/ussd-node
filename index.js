@@ -6,90 +6,69 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/', (req, res) => {
   const { text } = req.body;
-
+  const input = text.split('*');
   let response = '';
 
-  const input = text.split('*');
-
-  switch (input[0]) {
-    case '':
-      response = `CON Hitamo Ibiryo Ukunda:
+  if (text === '') {
+    response = `CON Hitamo Ibiryo Ukunda:
 1. Akawunga
 2. Inyama
 3. Umuceri
 4. Ifiriti`;
-      break;
-
-    case '1':
+  } else if (input[0] === '1') {
+    if (input.length === 1) {
       response = `CON Hitamo ubwoko bw'Akawunga:
 1. Akawunga ya sosoma
 2. Akawunga iseye neza
 3. Akawunga ifite ibinyamisogwe`;
-      break;
-
-    case '1*1':
-      response = 'END Wahisemo Akawunga ya sosoma. Murakoze!';
-      break;
-    case '1*2':
-      response = 'END Wahisemo Akawunga iseye neza. Murakoze!';
-      break;
-    case '1*3':
-      response = 'END Wahisemo Akawunga ifite ibinyamisogwe. Murakoze!';
-      break;
-
-    case '2':
-      response = `CON Hitamo ubwoko bw'inyama:
+    } else if (input[1] === '1') {
+      response = 'END Murakoze guhitamo Akawunga ya sosoma.';
+    } else if (input[1] === '2') {
+      response = 'END Murakoze guhitamo Akawunga iseye neza.';
+    } else if (input[1] === '3') {
+      response = 'END Murakoze guhitamo Akawunga ifite ibinyamisogwe.';
+    }
+  } else if (input[0] === '2') {
+    if (input.length === 1) {
+      response = `CON Hitamo ubwoko bw'Inyama:
 1. Inyama z'inkoko
 2. Inyama z'inka
 3. Inyama z'ihene`;
-      break;
-
-    case '2*1':
-      response = "END Wahisemo Inyama z'inkoko. Murakoze!";
-      break;
-    case '2*2':
-      response = "END Wahisemo Inyama z'inka. Murakoze!";
-      break;
-    case '2*3':
-      response = "END Wahisemo Inyama z'ihene. Murakoze!";
-      break;
-
-    case '3':
+    } else if (input[1] === '1') {
+      response = "END Murakoze guhitamo Inyama z'inkoko.";
+    } else if (input[1] === '2') {
+      response = "END Murakoze guhitamo Inyama z'inka.";
+    } else if (input[1] === '3') {
+      response = "END Murakoze guhitamo Inyama z'ihene.";
+    }
+  } else if (input[0] === '3') {
+    if (input.length === 1) {
       response = `CON Hitamo uko ushaka Umuceri:
 1. Umuceri w'umweru
 2. Umuceri wa pilawu
 3. Umuceri n'ibishyimbo`;
-      break;
-
-    case '3*1':
-      response = "END Wahisemo Umuceri w'umweru. Murakoze!";
-      break;
-    case '3*2':
-      response = "END Wahisemo Umuceri wa pilawu. Murakoze!";
-      break;
-    case '3*3':
-      response = "END Wahisemo Umuceri n'ibishyimbo. Murakoze!";
-      break;
-
-    case '4':
+    } else if (input[1] === '1') {
+      response = "END Murakoze guhitamo Umuceri w'umweru.";
+    } else if (input[1] === '2') {
+      response = "END Murakoze guhitamo Umuceri wa pilawu.";
+    } else if (input[1] === '3') {
+      response = "END Murakoze guhitamo Umuceri n'ibishyimbo.";
+    }
+  } else if (input[0] === '4') {
+    if (input.length === 1) {
       response = `CON Hitamo ubwoko bwa Ifiriti:
 1. Ifiriti ziseye
 2. Ifiriti za pomme
 3. Ifiriti zivanze n'inyama`;
-      break;
-
-    case '4*1':
-      response = 'END Wahisemo Ifiriti ziseye. Murakoze!';
-      break;
-    case '4*2':
-      response = 'END Wahisemo Ifiriti za pomme. Murakoze!';
-      break;
-    case '4*3':
-      response = "END Wahisemo Ifiriti zivanze n'inyama. Murakoze!";
-      break;
-
-    default:
-      response = 'END Icyo wahisemo nticyumvikanye.';
+    } else if (input[1] === '1') {
+      response = 'END Murakoze guhitamo Ifiriti ziseye.';
+    } else if (input[1] === '2') {
+      response = 'END Murakoze guhitamo Ifiriti za pomme.';
+    } else if (input[1] === '3') {
+      response = "END Murakoze guhitamo Ifiriti zivanze n'inyama.";
+    }
+  } else {
+    response = 'END Icyo wahisemo nticyumvikanye.';
   }
 
   res.set('Content-Type', 'text/plain');
