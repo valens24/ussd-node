@@ -5,7 +5,7 @@ const mysql = require('mysql2');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// ✅ MySQL Connection
+// MySQL Connection
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -14,12 +14,24 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-  if (err) console.error('DB connection failed:', err);
-  else console.log('Connected to MySQL');
+  if (err) {
+    console.error('DB connection failed:', err);
+  } else {
+    console.log('Connected to MySQL');
+  }
 });
 
 app.post('/', (req, res) => {
-  const { text, phoneNumber } = req.body;
+  console.log('Received request body:', req.body);
+
+  const { text = '', phoneNumber = '' } = req.body;
+
+  // Defensive: if phoneNumber or text missing, end session
+  if (!phoneNumber) {
+    res.set('Content-Type', 'text/plain');
+    return res.send('END Missing phone number.');
+  }
+
   const input = text.split('*');
   let response = '';
 
@@ -42,6 +54,7 @@ function handleMenu(input, lang, phoneNumber) {
   const translations = getTranslations(lang);
 
   if (level === 1) return `CON ${translations.menu}`;
+
   if (input[1] === '1') {
     if (level === 2) return `CON ${translations.akawunga}`;
     if (level === 3) return endAndSave(input, lang, phoneNumber, 'Akawunga');
@@ -64,13 +77,21 @@ function handleMenu(input, lang, phoneNumber) {
 
 function endAndSave(input, lang, phoneNumber, category) {
   const choicePath = input.join('*');
+
+  console.log('Saving to DB:', { phoneNumber, choicePath, lang, category });
+
   db.query(
     'INSERT INTO ussd_responses (phone_number, choice_path, language, category) VALUES (?, ?, ?, ?)',
     [phoneNumber, choicePath, lang, category],
-    (err) => {
-      if (err) console.error('DB error:', err);
+    (err, results) => {
+      if (err) {
+        console.error('DB insert error:', err);
+      } else {
+        console.log('Data inserted successfully:', results);
+      }
     }
   );
+
   const msg = lang === 'rw' ? 'Murakoze guhitamo neza.' : 'Thank you for your selection.';
   return `END ${msg}`;
 }
